@@ -24,11 +24,17 @@ It is not the main application source code. This repository only contains the sm
 
 ## Install
 
-In TizenBrew, add the GitHub module:
-
+No aplicativo **TizenBrew** na sua TV Samsung:
+1. Vá na aba **Modules** (ou **Add Module**)
+2. Selecione **GitHub** (ou digite o repositório):
 ```text
-NuvioMedia/NuvioTVTizen
+LeoBorba12/NuvioTVTizenBrew
 ```
+3. Pressione Instalar/Confirmar.
+4. Abra o **Nuvio TV** pela lista de módulos do TizenBrew!
+
+A aplicação conectará automaticamente à versão mais recente v1.2.2 hospedada em:
+`https://addon-catalogo-betor.vercel.app/tv/`
 
 ## For Developers
 
