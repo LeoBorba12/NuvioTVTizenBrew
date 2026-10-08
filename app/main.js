@@ -1,84 +1,53 @@
-(function openHostedNuvioTv() {
-  var hostedAppUrl = "https://addon-catalogo-betor.vercel.app/tv/";
-  var tvInput = window.tizen && window.tizen.tvinputdevice;
-  var launchUrl = buildFreshHostedUrl();
-  var hasAttemptedLaunch = false;
+window.__NUVIO_PLATFORM__ = "tizen";
+window.__NUVIO_TIZEN_ENGINEFS_SERVICE_ENABLED__ = false;
+window.__NUVIO_TIZEN_ENGINEFS_SERVICE_ID__ = "NuvioTV001.EngineFsService";
+window.__NUVIO_TIZEN_PLUGIN_SERVICE_ENABLED__ = false;
+window.__NUVIO_TIZEN_PLUGIN_SERVICE_ID__ = "NuvioTV001.PluginService";
 
-  function buildFreshHostedUrl() {
+var tvInput = window.tizen && window.tizen.tvinputdevice;
+if (tvInput && typeof tvInput.registerKey === "function") {
+  [
+    "Back",
+    "Return",
+    "MediaPlay",
+    "MediaPause",
+    "MediaPlayPause",
+    "MediaStop",
+    "MediaFastForward",
+    "MediaRewind",
+    "MediaTrackPrevious",
+    "MediaTrackNext"
+  ].forEach(function registerKey(keyName) {
     try {
-      var url = new URL(hostedAppUrl);
-      url.searchParams.set("source", "tizenbrew");
-      url.searchParams.set("wrapper", "tizen");
-      url.searchParams.set("_cb", String(Date.now()));
-      return url.toString();
-    } catch (_) {
-      return hostedAppUrl + "?source=tizenbrew&wrapper=tizen&_cb=" + encodeURIComponent(String(Date.now()));
-    }
-  }
-
-  function registerKey(keyName) {
-    if (tvInput && typeof tvInput.registerKey === "function") {
-      try {
-        tvInput.registerKey(keyName);
-      } catch (_) {}
-    }
-  }
-
-  function openFallbackLink() {
-    var fallbackLink = document.getElementById("fallback-link");
-    if (!fallbackLink) {
-      return;
-    }
-
-    fallbackLink.href = launchUrl;
-
-    try {
-      fallbackLink.click();
+      tvInput.registerKey(keyName);
     } catch (_) {}
-  }
+  });
+}
 
-  function launchHostedApp() {
-    if (hasAttemptedLaunch) {
-      return;
+function loadScript(src) {
+  var script = document.createElement("script");
+  script.async = false;
+  script.src = src;
+  script.defer = false;
+  script.onerror = function handleStartupScriptError() {
+    if (window.NuvioBootGuard) {
+      window.NuvioBootGuard.scriptFailed(src);
     }
-
-    hasAttemptedLaunch = true;
-
-    [
-      "MediaPlay",
-      "MediaPause",
-      "MediaPlayPause",
-      "MediaStop",
-      "MediaFastForward",
-      "MediaRewind",
-      "MediaTrackPrevious",
-      "MediaTrackNext"
-    ].forEach(registerKey);
-
-    try {
-      window.location.replace(launchUrl);
-    } catch (_) {}
-
-    window.setTimeout(function retryWithHref() {
-      if (String(window.location.href || "").indexOf("addon-catalogo-betor.vercel.app") === -1) {
-        try {
-          window.location.href = launchUrl;
-        } catch (_) {}
-      }
-    }, 150);
-
-    window.setTimeout(function retryWithAnchor() {
-      if (String(window.location.href || "").indexOf("addon-catalogo-betor.vercel.app") === -1) {
-        openFallbackLink();
-      }
-    }, 400);
+  };
+  if (window.NuvioBootGuard) {
+    window.NuvioBootGuard.stage("Loading " + src);
   }
+  document.body.appendChild(script);
+}
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", launchHostedApp, { once: true });
-  } else {
-    launchHostedApp();
-  }
+function startNuvioApp() {
+  loadScript("nuvio.env.js");
+  loadScript("assets/libs/qrcode-generator.js");
+  loadScript("app.bundle.js");
+}
 
-  window.setTimeout(launchHostedApp, 0);
-}());
+if (window.NuvioBootGuard && typeof window.NuvioBootGuard.runCompatibilityGate === "function") {
+  window.NuvioBootGuard.runCompatibilityGate({"platform":"tizen","minVersion":4,"minChrome":56,"requiredLabel":"Samsung Tizen 4.0+ · Chromium 56+ (2018+)"}, startNuvioApp);
+} else {
+  startNuvioApp();
+}

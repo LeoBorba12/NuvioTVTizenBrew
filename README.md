@@ -30,11 +30,10 @@ No aplicativo **TizenBrew** na sua TV Samsung:
 ```text
 LeoBorba12/NuvioTVTizenBrew
 ```
-3. Pressione Instalar/Confirmar.
+3. Pressione Instalar/Confirmar (ou Atualizar se já instalado).
 4. Abra o **Nuvio TV** pela lista de módulos do TizenBrew!
 
-A aplicação conectará automaticamente à versão mais recente v1.2.2 hospedada em:
-`https://addon-catalogo-betor.vercel.app/tv/`
+A aplicação agora roda **100% offline e localmente na TV**, com aceleração nativa de vídeo (`webapis.avplay`), carregamento instantâneo e total estabilidade.
 
 ## For Developers
 

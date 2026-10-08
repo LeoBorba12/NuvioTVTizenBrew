@@ -1,8 +1,8 @@
 {
   "name": "Nuvio TV",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "module",
-  "description": "Hosted TizenBrew wrapper for Nuvio TV (v1.2.2)",
+  "description": "Nuvio TV standalone module for TizenBrew (Offline v1.2.3 with native Samsung AVPlayer)",
   "packageType": "app",
   "appName": "Nuvio TV",
   "appPath": "app/index.html",
