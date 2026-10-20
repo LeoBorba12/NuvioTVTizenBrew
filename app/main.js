@@ -51,3 +51,35 @@ if (window.NuvioBootGuard && typeof window.NuvioBootGuard.runCompatibilityGate =
 } else {
   startNuvioApp();
 }
+
+
+// Samsung Tizen 4.0 Remote Navigation & Autofocus Enforcer
+(function initRemoteNavigation() {
+  function ensureFocus() {
+    var active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      var candidate = document.querySelector('[tabindex="0"], button, a, [role="button"], [data-focusable="true"], .focusable');
+      if (candidate && typeof candidate.focus === 'function') {
+        candidate.focus();
+      }
+    }
+  }
+
+  // Poll briefly after load to grab focus
+  var attempts = 0;
+  var interval = setInterval(function() {
+    ensureFocus();
+    attempts++;
+    if (attempts > 30) clearInterval(interval);
+  }, 200);
+
+  // When directional keys are pressed, prevent stuck state
+  window.addEventListener('keydown', function(e) {
+    var code = e.keyCode || e.which;
+    // 37: Left, 38: Up, 39: Right, 40: Down, 13: Enter, 10009: Samsung Return
+    if (code >= 37 && code <= 40) {
+      ensureFocus();
+    }
+  }, true);
+})();
+
